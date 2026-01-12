@@ -1,0 +1,5 @@
+.cache
+.zig-cache
+cdb-frags
+compile_commands.json
+zig-out
