@@ -2,6 +2,7 @@ const std = @import("std");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
+    
     const optimize = b.standardOptimizeOption(.{});
 
     const exe = b.addExecutable(.{
@@ -10,13 +11,17 @@ pub fn build(b: *std.Build) void {
             .target = target,
             .optimize = optimize,
         }),
+        .linkage = .static,
     });
 
+    exe.root_module.addIncludePath(std.Build.path(b,"./include/"));
     exe.addCSourceFiles(.{
         .root = b.path("."),
         .files = &[_][]const u8{"src/main.c"},
         .flags = &[_][]const u8 {"-std=c23","-Wall","-Wextra","-gen-cdb-fragment-path","cdb-frags"},
     });
+    exe.root_module.addLibraryPath(std.Build.path(b,"./lib/"));
+    exe.root_module.linkSystemLibrary("",.{});
     exe.linkLibC();
 
     b.installArtifact(exe);
